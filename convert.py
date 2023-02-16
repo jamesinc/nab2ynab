@@ -32,12 +32,15 @@ def main(infile):
             except IndexError:
                 payee = ""
 
-            transactions.append({
-                "Date": txn_date.strftime("%d/%m/%Y"),
-                "Payee": payee,
-                "Memo": row[5],
-                "Amount": row[1],
-            })
+            # Skip purchase authorisations as they will later become actual
+            # purchases and the dates will change and this will confuse YNAB
+            if row[4].strip().upper() != "PURCHASE AUTHORISATION":
+                transactions.append({
+                    "Date": txn_date.strftime("%d/%m/%Y"),
+                    "Payee": payee,
+                    "Memo": row[5],
+                    "Amount": row[1],
+                })
 
     if transactions:
         write(infile, transactions)
