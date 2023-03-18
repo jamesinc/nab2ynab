@@ -26,7 +26,7 @@ def main(infile):
 
         for row in reader:
             # Accept format D MMM YY
-            txn_date = datetime.strptime(row[0], "%d %b %y")
+            txn_date = datetime.strptime(row[0], "%d %b %y").strftime("%d/%m/%Y")
             try:
                 payee = row[8]
             except IndexError:
@@ -36,11 +36,13 @@ def main(infile):
             # purchases and the dates will change and this will confuse YNAB
             if row[4].strip().upper() != "PURCHASE AUTHORISATION":
                 transactions.append({
-                    "Date": txn_date.strftime("%d/%m/%Y"),
+                    "Date": txn_date,
                     "Payee": payee,
                     "Memo": row[5],
                     "Amount": row[1],
                 })
+            else:
+                print(f"AUTH ONLY: {txn_date} {payee} {row[5]} {row[1]}")
 
     if transactions:
         write(infile, transactions)
