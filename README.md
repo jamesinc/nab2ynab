@@ -4,7 +4,7 @@ This is a simple Python script that takes a CSV transaction dump from National A
 and re-processes it in-place for consumption by You Need A Budget (YNAB).
 
 ## Example output
-![nab2ynab terminal output, showing uncleared transactions](https://github.com/jamesinc/nab2ynab/assets/219819/59416c95-378e-4474-b250-02750c843728)
+![nab2ynab terminal output, showing uncleared transactions](assets/example-output.png)
 
 ## Usage
 
@@ -16,7 +16,7 @@ pipenv run convert my-transactions-list.csv
 
 I wrote this tool to run from a RMB click on my transactions CSV in Windows Explorer, like this:
 
-![Windows Explorer CSV context menu](https://github.com/jamesinc/nab2ynab/assets/219819/d056f12f-1bd7-4f69-b1c4-e15ab2993a5f)
+![Windows Explorer CSV context menu](assets/explorer-context-menu.png)
 
 To set this up, you need to add a registry key. You're somewhat on your own here, as it will depend
 how you have Python setup on your machine, but the basic process is as follows.
@@ -41,7 +41,7 @@ _(refer to the screenshots below if you get stuck)_
 
 ### Registry Editor Screenshots
 
-![Windows Registry Editor showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB](https://github.com/jamesinc/nab2ynab/assets/219819/f3162187-333e-4736-bf47-bfaeb234e004)
+![Windows Registry Editor showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB](assets/regedit-ynab.png)
 
-![Windows Registry Editor showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB\command](https://github.com/jamesinc/nab2ynab/assets/219819/2bb070af-d4f4-466e-a36d-fdb1e49987e9)
+![Windows Registry Editor showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB\command](assets/regedit-ynab-command.png)
 
