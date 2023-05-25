@@ -1,7 +1,11 @@
 
+import sys
 import csv
 import argparse
 from datetime import datetime
+
+import tabulate
+
 
 def write(outfile, transactions):
 
@@ -12,9 +16,8 @@ def write(outfile, transactions):
         dict_writer.writeheader()
         dict_writer.writerows(transactions)
 
-    print("Done")
 
-def main(infile):
+def main(infile, auth_only=False):
 
     transactions = []
 
@@ -24,9 +27,18 @@ def main(infile):
         # Skip headers row
         next(reader)
 
+        uncleared_balance = 0.0
+        authorisations = []
+
         for row in reader:
             # Accept format D MMM YY
-            txn_date = datetime.strptime(row[0], "%d %b %y").strftime("%d/%m/%Y")
+            try:
+                txn_date = datetime.strptime(row[0], "%d %b %y").strftime("%d/%m/%Y")
+            except ValueError:
+                print("BONK: Unable to process this CSV file")
+                print("      Has it already been run through this converter?")
+                sys.exit(1)
+
             try:
                 payee = row[8]
             except IndexError:
@@ -42,22 +54,45 @@ def main(infile):
                     "Amount": row[1],
                 })
             else:
-                print(f"AUTH ONLY: {txn_date} {payee} {row[5]} {row[1]}")
+                uncleared_balance += float(row[1])
+                authorisations.append({
+                    "Date": txn_date,
+                    "Payee": payee,
+                    "Memo": row[5],
+                    "Amount": float(row[1])
+                })
+
+        if authorisations:
+            print("\nThe following transactions have not yet cleared. If you want to add them to YNAB,")
+            print("you have to do it manually!\n")
+
+            header = authorisations[0].keys()
+            rows = [row.values() for row in authorisations]
+
+            print(tabulate.tabulate(rows, header, floatfmt=".2f", tablefmt="rounded_outline", showindex=True))
+            print(f"\nTOTAL UNCLEARED: ${uncleared_balance:.2f}\n")
 
     if transactions:
-        write(infile, transactions)
+        if auth_only:
+            print("** Note: the source CSV has not been modified (--auth-only mode) **")
+        else:
+            write(infile, transactions)
     else:
-        print("Nothing to do (no transactions detected)")
+        print("Nothing to do (no transactions found)")
+
+    print("Done!")
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         prog="NAB to YNAB CSV Converter",
-        description="Replaces a National Australia Bank (NAB) format transactions CSV with a YNAB-friendly CSV format"
+        description="Replaces a National Australia Bank (NAB) transactions CSV with a YNAB-friendly CSV format"
     )
 
     parser.add_argument("transactions", help="path to CSV exported from NAB online banking")
+    parser.add_argument("--auth-only", action="store_true", help="just display uncleared transactions and exit")
 
     args = parser.parse_args()
 
-    main(args.transactions)
+    main(args.transactions, args.auth_only)
+    input("Press <ENTER> to exit...")
