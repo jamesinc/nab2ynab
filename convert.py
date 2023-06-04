@@ -1,5 +1,9 @@
+"""
+convert.py
 
-import sys
+Converts National Australia Bank (NAB) transaction export CSVs to YouNeedABudget (YNAB) format.
+"""
+
 import csv
 import argparse
 from datetime import datetime
@@ -11,7 +15,7 @@ def write(outfile, transactions):
 
     keys = transactions[0].keys()
 
-    with open(outfile, "w", newline="") as outfile:
+    with open(outfile, "w", newline="", encoding="UTF-8") as outfile:
         dict_writer = csv.DictWriter(outfile, keys)
         dict_writer.writeheader()
         dict_writer.writerows(transactions)
@@ -21,7 +25,7 @@ def main(infile, auth_only=False):
 
     transactions = []
 
-    with open(infile, "r") as csvfile:
+    with open(infile, "r", encoding="UTF-8") as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
 
         # Skip headers row
@@ -37,7 +41,7 @@ def main(infile, auth_only=False):
             except ValueError:
                 print("BONK: Unable to process this CSV file")
                 print("      Has it already been run through this converter?")
-                sys.exit(1)
+                raise
 
             try:
                 payee = row[8]
@@ -82,6 +86,7 @@ def main(infile, auth_only=False):
 
     print("Done!")
 
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
@@ -95,4 +100,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args.transactions, args.auth_only)
-    input("Press <ENTER> to exit...")

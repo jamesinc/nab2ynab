@@ -19,7 +19,10 @@ I wrote this tool to run from a RMB click on my transactions CSV in Windows Expl
 ![Windows Explorer CSV context menu](assets/explorer-context-menu.png)
 
 To set this up, you need to add a registry key. You're somewhat on your own here, as it will depend
-how you have Python setup on your machine, but the basic process is as follows.
+how you have Python setup on your machine. I use `pipenv`, and I have written `launcher.bat` to take care of launching
+the converter via `pipenv run convert <my-txns.csv>`
+
+Updating Explorer's context menus can be done as follows:
 
 _(refer to the screenshots below if you get stuck)_
 
@@ -34,14 +37,16 @@ _(refer to the screenshots below if you get stuck)_
    This is the text you will see when you right-click a CSV.
 10. Now, on the left side, right-click on **YNAB** and, again, select **New > key**. Name this new key **command**
 11. With the **command** key selected, on the right-hand side, again edit the **(Default)** string value.
-12. This is where we set the command that will be run. The command is made up of three parts:
-    - The Python executable (for me, it is C:\Python39\python.exe)
-    - The full path to convert.py
-    - "%1" (this will be replaced with the path of the CSV you right-click on)
+12. This is where we set the command that will be run. The command is made up of two parts:
+    - The full path to launcher.bat, e.g. `"C:\MyGitProjects\nab2ynab\launcher.bat"`
+    - `"%1"` (this is a variable representing the file that is being right-clicked on)
+    
+    Note that the command should include the quote marks, e.g. the full value for the Registry key would be
+    `"C:\MyGitProjects\nab2ynab\launcher.bat" "%1"`
 
 ### Registry Editor Screenshots
 
-![Windows Registry Editor showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB](assets/regedit-ynab.png)
+![regedit.exe showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB](assets/regedit-ynab.png)
 
-![Windows Registry Editor showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB\command](assets/regedit-ynab-command.png)
+![regedit.exe showing \Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell\YNAB\command](assets/regedit-ynab-command.png)
 
