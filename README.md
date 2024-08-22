@@ -27,7 +27,7 @@ Updating Explorer's context menus can be done as follows:
 _(refer to the screenshots below if you get stuck)_
 
 1. Open the Registry Editor (Run prompt: `regedit`)
-2. Naviage to `Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell`.
+2. Navigate to `Computer\HKEY_CLASSES_ROOT\Excel.CSV\shell`.
    If you don't have Excel installed, potentially you will need to instead
    go to `Computer\HKEY_CLASSES_ROOT\csv\shell` (but I'm not sure)
 3. From the key list on the left side of the Registry Editor, right-click on **shell** and select **New > key**
